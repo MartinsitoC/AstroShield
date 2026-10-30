@@ -1244,10 +1244,107 @@ function setupCameraPresets() {
 // ==============================================================================
 // 11. GESTIÓN DE EVENTOS DE USUARIO E INTERACCIÓN
 // ==============================================================================
+let isCinemaMode = false;
+let isLeftSidebarCollapsed = false;
+let isRightSidebarCollapsed = false;
+
+function triggerCanvasResize() {
+  onWindowResize();
+  window.dispatchEvent(new Event('resize'));
+}
+
+function enterCinemaMode() {
+  isCinemaMode = true;
+  document.body.classList.add('cinema-mode');
+  const btnCinema = document.getElementById('btn-cinema-mode');
+  if (btnCinema) btnCinema.classList.add('active');
+  triggerCanvasResize();
+}
+
+function exitCinemaMode() {
+  isCinemaMode = false;
+  document.body.classList.remove('cinema-mode');
+  const btnCinema = document.getElementById('btn-cinema-mode');
+  if (btnCinema) btnCinema.classList.remove('active');
+  if (document.fullscreenElement && document.exitFullscreen) {
+    document.exitFullscreen().catch(() => {});
+  }
+  triggerCanvasResize();
+}
+
+function toggleCinemaMode() {
+  if (!isCinemaMode) {
+    enterCinemaMode();
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+  } else {
+    exitCinemaMode();
+  }
+}
+
 function setupUserInteractions() {
   // Selector de Vista: Morfado 3D Globo <-> 2D Mapa Plano
   document.getElementById('view-mode-3d').addEventListener('click', () => transitionViewMode('3d'));
   document.getElementById('view-mode-2d').addEventListener('click', () => transitionViewMode('2d'));
+
+  // Modo Cine / Pantalla Completa
+  const btnCinema = document.getElementById('btn-cinema-mode');
+  if (btnCinema) {
+    btnCinema.addEventListener('click', toggleCinemaMode);
+  }
+
+  const btnRestore = document.getElementById('btn-restore-hud');
+  if (btnRestore) {
+    btnRestore.addEventListener('click', toggleCinemaMode);
+  }
+
+  // Colapso / Despliegue de Panel Lateral Izquierdo
+  const btnToggleLeft = document.getElementById('btn-toggle-left');
+  const sidebarLeft = document.querySelector('.hud-sidebar-left');
+  if (btnToggleLeft && sidebarLeft) {
+    btnToggleLeft.addEventListener('click', () => {
+      isLeftSidebarCollapsed = !isLeftSidebarCollapsed;
+      sidebarLeft.classList.toggle('collapsed', isLeftSidebarCollapsed);
+      const icon = btnToggleLeft.querySelector('.toggle-icon');
+      if (icon) icon.textContent = isLeftSidebarCollapsed ? '▶' : '◀';
+      btnToggleLeft.title = isLeftSidebarCollapsed ? 'Desplegar panel izquierdo' : 'Colapsar panel izquierdo';
+      triggerCanvasResize();
+    });
+  }
+
+  // Colapso / Despliegue de Panel Lateral Derecho
+  const btnToggleRight = document.getElementById('btn-toggle-right');
+  const sidebarRight = document.querySelector('.hud-sidebar-right');
+  if (btnToggleRight && sidebarRight) {
+    btnToggleRight.addEventListener('click', () => {
+      isRightSidebarCollapsed = !isRightSidebarCollapsed;
+      sidebarRight.classList.toggle('collapsed', isRightSidebarCollapsed);
+      const icon = btnToggleRight.querySelector('.toggle-icon');
+      if (icon) icon.textContent = isRightSidebarCollapsed ? '◀' : '▶';
+      btnToggleRight.title = isRightSidebarCollapsed ? 'Desplegar panel derecho' : 'Colapsar panel derecho';
+      triggerCanvasResize();
+    });
+  }
+
+  // Atajos de Teclado: 'F' para Modo Cine / Pantalla Completa, 'Escape' para salir
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+
+    if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      toggleCinemaMode();
+    } else if (e.key === 'Escape' && isCinemaMode) {
+      exitCinemaMode();
+    }
+  });
+
+  // Detección de salida de pantalla completa nativa
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && isCinemaMode) {
+      exitCinemaMode();
+    }
+  });
 
   // Matriz de Satélites S1 a S8
   document.querySelectorAll('.sat-matrix-btn').forEach((btn) => {

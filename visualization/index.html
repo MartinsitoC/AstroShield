@@ -59,7 +59,7 @@
       display: block;
     }
 
-    /* Overlay HUD */
+    /* Overlay HUD Dashboard con Animación Suave de Cine */
     .hud-overlay {
       position: absolute;
       top: 0;
@@ -73,6 +73,15 @@
       grid-template-columns: 320px 1fr 370px;
       padding: 14px 18px;
       gap: 14px;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease, filter 0.4s ease;
+    }
+
+    /* Modo Cine / Pantalla Completa: Desvanecimiento del HUD */
+    body.cinema-mode .hud-overlay {
+      opacity: 0;
+      pointer-events: none !important;
+      transform: scale(1.02);
+      filter: blur(4px);
     }
 
     /* Componentes HUD con Glassmorphism */
@@ -192,14 +201,95 @@
       box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
     }
 
-    /* Panel Lateral Izquierdo (Fila 2, Col 1) */
+    /* Paneles Laterales Colapsables */
     .hud-sidebar-left {
       grid-row: 2;
       grid-column: 1;
       height: 100%;
+      position: relative;
+      overflow: visible !important;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+      will-change: transform;
+    }
+
+    .hud-sidebar-left.collapsed {
+      transform: translateX(calc(-100% - 24px));
+    }
+
+    .hud-sidebar-right {
+      grid-row: 2;
+      grid-column: 3;
+      height: 100%;
+      position: relative;
+      overflow: visible !important;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+      will-change: transform;
+    }
+
+    .hud-sidebar-right.collapsed {
+      transform: translateX(calc(100% + 24px));
+    }
+
+    .sidebar-scroll-wrapper {
+      width: 100%;
+      height: 100%;
       overflow-y: auto;
+      overflow-x: hidden;
       scrollbar-width: thin;
       scrollbar-color: var(--card-border) transparent;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 2px;
+    }
+
+    /* Pestañas / Botones Toggle de Minimizado en los Bordes */
+    .sidebar-toggle-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 72px;
+      background: rgba(8, 14, 28, 0.94);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 35;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.35);
+      outline: none;
+      font-size: 0.75rem;
+      padding: 0;
+      pointer-events: auto;
+    }
+
+    .sidebar-toggle-btn:hover {
+      background: var(--neon-cyan);
+      color: #030712;
+      box-shadow: 0 0 20px var(--neon-cyan);
+    }
+
+    .sidebar-toggle-btn.left {
+      right: -22px;
+      border-left: none;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .sidebar-toggle-btn.right {
+      left: -22px;
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .toggle-icon {
+      transition: transform 0.25s ease;
+      user-select: none;
+      font-weight: bold;
     }
 
     .hud-section-title {
@@ -307,16 +397,6 @@
     input:checked + .slider:before {
       transform: translateX(17px);
       background-color: #030814;
-    }
-
-    /* Panel Lateral Derecho (Inspector) (Fila 2, Col 3) */
-    .hud-sidebar-right {
-      grid-row: 2;
-      grid-column: 3;
-      height: 100%;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: var(--card-border) transparent;
     }
 
     /* Matriz de Satélites S1..S8 */
@@ -605,6 +685,56 @@
       border: 1px solid var(--neon-red);
     }
 
+    /* Botón Flotante para Salir de Modo Cine */
+    .floating-cinema-btn {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      z-index: 100;
+      background: rgba(8, 14, 28, 0.88);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.45);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      outline: none;
+      pointer-events: auto;
+    }
+
+    .floating-cinema-btn:hover {
+      background: var(--neon-cyan);
+      color: #030712;
+      box-shadow: 0 0 25px var(--neon-cyan);
+      transform: scale(1.05);
+    }
+
+    body.cinema-mode .floating-cinema-btn {
+      display: flex;
+      animation: cinemaFadeIn 0.35s ease forwards;
+    }
+
+    @keyframes cinemaFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     /* Fallback CORS Banner */
     #fallback-alert {
       display: none;
@@ -636,6 +766,11 @@
     <div id="webgl-canvas-container"></div>
   </div>
 
+  <!-- Botón Flotante para Salir de Modo Cine / Restaurar HUD -->
+  <button id="btn-restore-hud" class="floating-cinema-btn" title="Restaurar Interfaz (Esc o F)">
+    👁️ Salir de Modo Cine [F]
+  </button>
+
   <!-- Alerta de respaldo para carga local (CORS / file://) -->
   <div id="fallback-alert">
     <span>⚠️ Carga automática bloqueada por protocolo local. Selecciona <strong>run_results.json</strong>:</span>
@@ -656,111 +791,126 @@
       <div class="view-mode-selector">
         <button id="view-mode-3d" class="mode-btn active">🌐 Globo 3D</button>
         <button id="view-mode-2d" class="mode-btn">🗺️ Mapa 2D Plano</button>
+        <button id="btn-cinema-mode" class="mode-btn" title="Pantalla Completa / Modo Inmersivo (Atajo: F)">⛶ Modo Cine [F]</button>
       </div>
     </header>
 
     <!-- B) Panel Lateral Izquierdo: Vistas de Cámara y Capas Holográficas -->
     <aside class="hud-card hud-sidebar-left">
-      <div class="hud-section-title">🔭 Vistas de Cámara (Presets)</div>
-      <div class="camera-presets-grid">
-        <button id="cam-preset-global" class="cam-btn active">
-          <span>Órbita Global Libre</span>
-          <span style="opacity: 0.5;">[360°]</span>
-        </button>
-        <button id="cam-preset-arctic" class="cam-btn">
-          <span>Polo Norte / Ártico</span>
-          <span style="opacity: 0.5;">[+90°]</span>
-        </button>
-        <button id="cam-preset-antarctic" class="cam-btn">
-          <span>Polo Sur / Antártida</span>
-          <span style="opacity: 0.5;">[-90°]</span>
-        </button>
-        <button id="cam-preset-equator" class="cam-btn">
-          <span>Cinturón Ecuatorial</span>
-          <span style="opacity: 0.5;">[0°]</span>
-        </button>
-        <button id="cam-preset-follow" class="cam-btn">
-          <span>🎯 Seguir Satélite Foco</span>
-          <span id="follow-sat-tag" style="color: var(--neon-cyan); font-weight: 700;">[S1]</span>
-        </button>
-      </div>
+      <!-- Pestaña Toggle de Minimizado en el Borde -->
+      <button id="btn-toggle-left" class="sidebar-toggle-btn left" title="Colapsar panel izquierdo">
+        <span class="toggle-icon">◀</span>
+      </button>
 
-      <div class="hud-section-title" style="margin-top: 10px;">⚡ Capas Holográficas</div>
-      <div class="layers-container">
-        <div class="layer-toggle-row">
-          <span>Conos 3D de Cobertura</span>
-          <label class="switch">
-            <input type="checkbox" id="toggle-cones" checked>
-            <span class="slider"></span>
-          </label>
+      <div class="sidebar-scroll-wrapper">
+        <div class="hud-section-title">🔭 Vistas de Cámara (Presets)</div>
+        <div class="camera-presets-grid">
+          <button id="cam-preset-global" class="cam-btn active">
+            <span>Órbita Global Libre</span>
+            <span style="opacity: 0.5;">[360°]</span>
+          </button>
+          <button id="cam-preset-arctic" class="cam-btn">
+            <span>Polo Norte / Ártico</span>
+            <span style="opacity: 0.5;">[+90°]</span>
+          </button>
+          <button id="cam-preset-antarctic" class="cam-btn">
+            <span>Polo Sur / Antártida</span>
+            <span style="opacity: 0.5;">[-90°]</span>
+          </button>
+          <button id="cam-preset-equator" class="cam-btn">
+            <span>Cinturón Ecuatorial</span>
+            <span style="opacity: 0.5;">[0°]</span>
+          </button>
+          <button id="cam-preset-follow" class="cam-btn">
+            <span>🎯 Seguir Satélite Foco</span>
+            <span id="follow-sat-tag" style="color: var(--neon-cyan); font-weight: 700;">[S1]</span>
+          </button>
         </div>
-        <div class="layer-toggle-row">
-          <span>Láseres de Regiones</span>
-          <label class="switch">
-            <input type="checkbox" id="toggle-lasers" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div class="layer-toggle-row">
-          <span>Atmósfera & Glow</span>
-          <label class="switch">
-            <input type="checkbox" id="toggle-atmosphere" checked>
-            <span class="slider"></span>
-          </label>
+
+        <div class="hud-section-title" style="margin-top: 10px;">⚡ Capas Holográficas</div>
+        <div class="layers-container">
+          <div class="layer-toggle-row">
+            <span>Conos 3D de Cobertura</span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-cones" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="layer-toggle-row">
+            <span>Láseres de Regiones</span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-lasers" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="layer-toggle-row">
+            <span>Atmósfera & Glow</span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-atmosphere" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
         </div>
       </div>
     </aside>
 
     <!-- C) Panel Lateral Derecho: Inspector de Satélites y Regiones Críticas -->
     <aside class="hud-card hud-sidebar-right">
-      <div class="hud-section-title">🛰️ Matriz Satelital (8 Activos LEO)</div>
-      <div class="sat-matrix-grid">
-        <button class="sat-matrix-btn active" data-sat-id="1">S1</button>
-        <button class="sat-matrix-btn" data-sat-id="2">S2</button>
-        <button class="sat-matrix-btn" data-sat-id="3">S3</button>
-        <button class="sat-matrix-btn" data-sat-id="4">S4</button>
-        <button class="sat-matrix-btn" data-sat-id="5">S5</button>
-        <button class="sat-matrix-btn" data-sat-id="6">S6</button>
-        <button class="sat-matrix-btn" data-sat-id="7">S7</button>
-        <button class="sat-matrix-btn" data-sat-id="8">S8</button>
-      </div>
+      <!-- Pestaña Toggle de Minimizado en el Borde -->
+      <button id="btn-toggle-right" class="sidebar-toggle-btn right" title="Colapsar panel derecho">
+        <span class="toggle-icon">▶</span>
+      </button>
 
-      <!-- Ficha Técnica del Satélite Seleccionado -->
-      <div class="telemetry-card-box">
-        <div class="telem-row">
-          <span class="telem-label">Designación</span>
-          <span id="telem-sat-name" class="telem-val cyan">SAT-1 (Alpha)</span>
+      <div class="sidebar-scroll-wrapper">
+        <div class="hud-section-title">🛰️ Matriz Satelital (8 Activos LEO)</div>
+        <div class="sat-matrix-grid">
+          <button class="sat-matrix-btn active" data-sat-id="1">S1</button>
+          <button class="sat-matrix-btn" data-sat-id="2">S2</button>
+          <button class="sat-matrix-btn" data-sat-id="3">S3</button>
+          <button class="sat-matrix-btn" data-sat-id="4">S4</button>
+          <button class="sat-matrix-btn" data-sat-id="5">S5</button>
+          <button class="sat-matrix-btn" data-sat-id="6">S6</button>
+          <button class="sat-matrix-btn" data-sat-id="7">S7</button>
+          <button class="sat-matrix-btn" data-sat-id="8">S8</button>
         </div>
-        <div class="telem-row">
-          <span class="telem-label">Coordenadas LAT / LON</span>
-          <span id="telem-sat-coords" class="telem-val">--°, --°</span>
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">Altitud Orbital LEO</span>
-          <span class="telem-val">620.0 km</span>
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">Radio de Huella</span>
-          <span class="telem-val">300.0 km</span>
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">Área de Huella</span>
-          <span class="telem-val">~0.282 M km²</span>
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">Estado de Proximidad</span>
-          <span id="telem-sat-proximity" class="telem-val green">SEGURA (>25.0°)</span>
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">Objetivos en Rango</span>
-          <span id="telem-sat-targets" class="telem-val cyan">Ninguno</span>
-        </div>
-      </div>
 
-      <!-- Monitor de Regiones Críticas -->
-      <div class="hud-section-title" style="margin-top: 6px;">🌍 Monitor de Regiones Críticas</div>
-      <div id="regions-monitor-container" class="regions-monitor-list">
-        <!-- Generado dinámicamente -->
+        <!-- Ficha Técnica del Satélite Seleccionado -->
+        <div class="telemetry-card-box">
+          <div class="telem-row">
+            <span class="telem-label">Designación</span>
+            <span id="telem-sat-name" class="telem-val cyan">SAT-1 (Alpha)</span>
+          </div>
+          <div class="telem-row">
+            <span class="telem-label">Coordenadas LAT / LON</span>
+            <span id="telem-sat-coords" class="telem-val">--°, --°</span>
+          </div>
+          <div class="telem-row">
+            <span class="telem-label">Altitud Orbital LEO</span>
+            <span class="telem-val">620.0 km</span>
+          </div>
+          <div class="telem-row">
+            <span class="telem-label">Radio de Huella</span>
+            <span class="telem-val">300.0 km</span>
+          </div>
+          <div class="telem-row">
+            <span class="telem-label">Área de Huella</span>
+            <span class="telem-val">~0.282 M km²</span>
+          </div>
+          <div class="telem-row">
+            <span class="telem-label">Estado de Proximidad</span>
+            <span id="telem-sat-proximity" class="telem-val green">SEGURA (>25.0°)</span>
+          </div>
+          <div class="telem-row">
+            <span class="telem-label">Objetivos en Rango</span>
+            <span id="telem-sat-targets" class="telem-val cyan">Ninguno</span>
+          </div>
+        </div>
+
+        <!-- Monitor de Regiones Críticas -->
+        <div class="hud-section-title" style="margin-top: 6px;">🌍 Monitor de Regiones Críticas</div>
+        <div id="regions-monitor-container" class="regions-monitor-list">
+          <!-- Generado dinámicamente -->
+        </div>
       </div>
     </aside>
 
