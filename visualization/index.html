@@ -3,19 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AstroShield 3D — Constellation Monitor</title>
+  <title>AstroShield 3D — Mission Control Orbital Telemetry</title>
+  
+  <!-- Tipografía técnica y espacial -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg-dark: #070913;
-      --card-bg: rgba(13, 20, 38, 0.82);
-      --card-border: rgba(0, 229, 255, 0.25);
+      --bg-dark: #050711;
+      --card-bg: rgba(9, 14, 28, 0.85);
+      --card-border: rgba(0, 229, 255, 0.28);
+      --card-border-glow: rgba(0, 229, 255, 0.45);
       --neon-cyan: #00e5ff;
       --neon-green: #00ff88;
       --neon-red: #ff3344;
       --neon-amber: #ffaa00;
       --text-main: #f0f4fc;
-      --text-muted: #8b9bb4;
-      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --text-muted: #8396b2;
+      --font-title: 'Orbitron', monospace, sans-serif;
+      --font-ui: 'Rajdhani', -apple-system, sans-serif;
     }
 
     * {
@@ -27,23 +35,31 @@
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
-      font-family: var(--font-family);
+      font-family: var(--font-ui);
       overflow: hidden;
       width: 100vw;
       height: 100vh;
       user-select: none;
     }
 
-    #webgl-container {
+    /* Contenedor Gráfico WebGL (Escena Three.js Unificada) */
+    #viewport-container {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: 1;
+      overflow: hidden;
     }
 
-    /* HUD Dashboard Overlay */
+    #webgl-canvas-container {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Overlay HUD */
     .hud-overlay {
       position: absolute;
       top: 0;
@@ -52,207 +68,296 @@
       height: 100%;
       pointer-events: none;
       z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      padding: 20px;
+      display: grid;
+      grid-template-rows: 60px 1fr 100px;
+      grid-template-columns: 320px 1fr 370px;
+      padding: 14px 18px;
+      gap: 14px;
     }
 
-    .hud-sidebar {
-      width: 380px;
-      max-width: 90vw;
-      height: calc(100vh - 40px);
+    /* Componentes HUD con Glassmorphism */
+    .hud-card {
       background: var(--card-bg);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 22px;
+      border-radius: 10px;
+      padding: 14px 16px;
+      pointer-events: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), inset 0 0 12px rgba(0, 229, 255, 0.05);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .hud-card:hover {
+      border-color: var(--card-border-glow);
+    }
+
+    /* Header Superior (Grid Col: 1..4) */
+    .hud-header {
+      grid-column: 1 / 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(8, 12, 24, 0.9);
+      backdrop-filter: blur(16px);
       pointer-events: auto;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(0, 229, 255, 0.12);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .status-beacon {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: 0 0 10px var(--neon-green);
+      animation: pulse-beacon 2s infinite;
+    }
+
+    @keyframes pulse-beacon {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .brand-title {
+      font-family: var(--font-title);
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .brand-title span {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+    }
+
+    .brand-tag {
+      font-size: 0.7rem;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      color: var(--neon-cyan);
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .view-mode-selector {
+      display: flex;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 4px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .mode-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 5px 14px;
+      border-radius: 4px;
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mode-btn.active {
+      background: rgba(0, 229, 255, 0.2);
+      color: var(--neon-cyan);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+
+    /* Panel Lateral Izquierdo (Fila 2, Col 1) */
+    .hud-sidebar-left {
+      grid-row: 2;
+      grid-column: 1;
+      height: 100%;
       overflow-y: auto;
       scrollbar-width: thin;
       scrollbar-color: var(--card-border) transparent;
     }
 
-    .hud-sidebar::-webkit-scrollbar {
-      width: 5px;
-    }
-    .hud-sidebar::-webkit-scrollbar-thumb {
-      background: var(--card-border);
-      border-radius: 4px;
-    }
-
-    /* Header */
-    .brand-header {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 12px;
-    }
-    .brand-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: 1px;
+    .hud-section-title {
+      font-family: var(--font-title);
+      font-size: 0.72rem;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .brand-title span {
       color: var(--neon-cyan);
-      text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
-    }
-    .brand-subtitle {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Switcher Toggle Buttons */
-    .switch-section {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .section-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-    }
-    .switch-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 4px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .switch-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 9px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 2px;
-    }
-    .switch-btn span.gen-tag {
-      font-size: 0.65rem;
-      opacity: 0.8;
-      font-weight: 400;
-    }
-    .switch-btn:hover {
-      color: var(--text-main);
-      background: rgba(255, 255, 255, 0.05);
-    }
-    .switch-btn.active {
-      background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(0, 150, 255, 0.15));
-      color: #ffffff;
-      border: 1px solid var(--neon-cyan);
-      box-shadow: 0 0 14px rgba(0, 229, 255, 0.35);
+      gap: 6px;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.18);
+      padding-bottom: 6px;
     }
 
-    /* Telemetry Grid */
-    .telemetry-grid {
+    /* Presets de Cámara */
+    .camera-presets-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 6px;
     }
-    .telemetry-card {
+
+    .cam-btn {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .telemetry-label {
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .telemetry-value {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: #ffffff;
-      font-variant-numeric: tabular-nums;
-    }
-    .telemetry-value.cyan { color: var(--neon-cyan); }
-    .telemetry-value.green { color: var(--neon-green); }
-    .telemetry-value.red { color: var(--neon-red); }
-    .telemetry-sub {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-    }
-
-    /* Target Regions List */
-    .regions-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 190px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .region-item {
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      padding: 8px 12px;
       border-radius: 6px;
-      padding: 7px 10px;
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.74rem;
-      transition: all 0.2s;
-    }
-    .region-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .region-name {
-      font-weight: 600;
-      color: var(--text-main);
-    }
-    .region-meta {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-    }
-    .region-badge {
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .region-badge.covered {
-      background: rgba(0, 255, 136, 0.15);
-      color: var(--neon-green);
-      border: 1px solid rgba(0, 255, 136, 0.4);
-    }
-    .region-badge.uncovered {
-      background: rgba(255, 51, 68, 0.15);
-      color: var(--neon-red);
-      border: 1px solid rgba(255, 51, 68, 0.4);
     }
 
-    /* Legend Box */
-    .legend-box {
+    .cam-btn:hover {
+      background: rgba(0, 229, 255, 0.1);
+      border-color: rgba(0, 229, 255, 0.4);
+      color: var(--neon-cyan);
+    }
+
+    .cam-btn.active {
+      background: rgba(0, 229, 255, 0.2);
+      border-color: var(--neon-cyan);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.25);
+    }
+
+    /* Switches de Capas Holográficas */
+    .layers-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .layer-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.8rem;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 19px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .3s;
+      border-radius: 20px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 13px;
+      width: 13px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--neon-cyan);
+      box-shadow: 0 0 8px var(--neon-cyan);
+    }
+    input:checked + .slider:before {
+      transform: translateX(17px);
+      background-color: #030814;
+    }
+
+    /* Panel Lateral Derecho (Inspector) (Fila 2, Col 3) */
+    .hud-sidebar-right {
+      grid-row: 2;
+      grid-column: 3;
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--card-border) transparent;
+    }
+
+    /* Matriz de Satélites S1..S8 */
+    .sat-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .sat-matrix-btn {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 6px 4px;
+      border-radius: 6px;
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .sat-matrix-btn:hover {
+      color: #fff;
+      background: rgba(0, 229, 255, 0.12);
+      border-color: rgba(0, 229, 255, 0.35);
+    }
+
+    .sat-matrix-btn.active {
+      background: rgba(0, 229, 255, 0.25);
+      border-color: var(--neon-cyan);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    }
+
+    /* Ficha Técnica del Satélite Seleccionado */
+    .telemetry-card-box {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 8px;
@@ -260,181 +365,457 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+      font-size: 0.78rem;
     }
-    .legend-item {
+
+    .telem-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+      padding-bottom: 4px;
+    }
+
+    .telem-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .telem-label {
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .telem-val {
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-title);
+      font-size: 0.78rem;
+    }
+
+    .telem-val.cyan { color: var(--neon-cyan); }
+    .telem-val.green { color: var(--neon-green); }
+    .telem-val.red { color: var(--neon-red); }
+
+    /* Estado de Regiones Críticas */
+    .regions-monitor-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .region-row {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+    }
+
+    .region-name-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .region-prio-tag {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .region-status-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .region-status-badge.covered {
+      background: rgba(0, 255, 136, 0.18);
+      color: var(--neon-green);
+      border: 1px solid rgba(0, 255, 136, 0.45);
+    }
+
+    .region-status-badge.uncovered {
+      background: rgba(255, 51, 68, 0.18);
+      color: var(--neon-red);
+      border: 1px solid rgba(255, 51, 68, 0.45);
+    }
+
+    /* Barra Inferior (Línea Generacional Evolutiva) (Fila 3, Col 1..4) */
+    .hud-bottom-bar {
+      grid-row: 3;
+      grid-column: 1 / 4;
+      background: rgba(8, 12, 24, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 18px;
+      display: grid;
+      grid-template-columns: 240px 1fr 420px;
+      align-items: center;
+      gap: 18px;
+      pointer-events: auto;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Controles de Reproducción */
+    .playback-controls {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.72rem;
-      color: #d0d8e8;
     }
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .dot-covered { background: var(--neon-green); box-shadow: 0 0 6px var(--neon-green); }
-    .dot-uncovered { background: var(--neon-red); box-shadow: 0 0 6px var(--neon-red); }
-    .dot-satellite { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
-    .dot-debris { background: rgba(255, 51, 68, 0.7); border: 1px solid var(--neon-red); }
-    .dot-occupied { background: rgba(255, 170, 0, 0.7); border: 1px solid var(--neon-amber); }
 
-    /* Top Right Instructions / Status */
-    .hud-controls-hint {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      pointer-events: auto;
-      display: flex;
-      gap: 12px;
-      align-items: center;
+    .ctrl-btn {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .hint-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+
+    .ctrl-btn:hover {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: var(--neon-cyan);
+      color: #fff;
     }
-    .hint-key {
+
+    .ctrl-btn.active {
+      background: var(--neon-cyan);
+      color: #040915;
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+    }
+
+    .speed-select {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--neon-cyan);
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* Slider / Timeline Scrubber */
+    .timeline-scrubber-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .timeline-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-family: var(--font-title);
+    }
+
+    .gen-display-badge {
+      color: var(--neon-cyan);
+      font-weight: 800;
+    }
+
+    .scrubber-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
       background: rgba(255, 255, 255, 0.1);
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .scrubber-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan);
+      cursor: pointer;
+      border: 2px solid #ffffff;
+    }
+
+    /* KPIs en Tiempo Real */
+    .kpi-cards-group {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .kpi-badge {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      text-align: center;
+    }
+
+    .kpi-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .kpi-status-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
       padding: 2px 6px;
       border-radius: 4px;
-      color: var(--neon-cyan);
-      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    /* Fallback Modal / Toast */
-    .fallback-card {
-      display: none;
-      background: rgba(255, 51, 68, 0.12);
-      border: 1px solid var(--neon-red);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 0.72rem;
-      flex-direction: column;
-      gap: 6px;
+    .kpi-status-badge.valid {
+      background: rgba(0, 255, 136, 0.2);
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
     }
-    .fallback-card input[type="file"] {
-      font-size: 0.7rem;
-      color: var(--text-main);
+
+    .kpi-status-badge.invalid {
+      background: rgba(255, 51, 68, 0.2);
+      color: var(--neon-red);
+      border: 1px solid var(--neon-red);
+    }
+
+    /* Fallback CORS Banner */
+    #fallback-alert {
+      display: none;
+      position: absolute;
+      top: 75px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 51, 68, 0.9);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      z-index: 100;
+      pointer-events: auto;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+      align-items: center;
+      gap: 12px;
+    }
+
+    #fallback-alert input {
+      font-size: 0.75rem;
     }
   </style>
 </head>
 <body>
 
-  <!-- Contenedor WebGL para la escena Three.js -->
-  <div id="webgl-container"></div>
-
-  <!-- HUD Dashboard Flotante -->
-  <div class="hud-overlay">
-    <aside class="hud-sidebar">
-      
-      <!-- Encabezado de la Constelación -->
-      <div class="brand-header">
-        <h1 class="brand-title">Astro<span>Shield</span> 3D</h1>
-        <p class="brand-subtitle">Monitor de Constelación y Evasión Orbital</p>
-      </div>
-
-      <!-- Selector de Estado Inicial vs Final -->
-      <div class="switch-section">
-        <div class="section-label">Fase de Simulación</div>
-        <div class="switch-buttons">
-          <button id="btn-initial" class="switch-btn">
-            Config. Inicial
-            <span class="gen-tag">Gen 0 (Azar)</span>
-          </button>
-          <button id="btn-final" class="switch-btn active">
-            Solución Óptima
-            <span class="gen-tag">Gen Final (GA)</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Alerta Fallback para CORS / Protocolo Local -->
-      <div id="fallback-card" class="fallback-card">
-        <strong>Aviso de Carga Local (CORS):</strong>
-        <span>Si el archivo JSON no carga automáticamente, selecciónalo manualmente desde:</span>
-        <input type="file" id="file-input" accept=".json">
-      </div>
-
-      <!-- Tarjetas de Telemetría Dinámica -->
-      <div class="telemetry-grid">
-        <div class="telemetry-card">
-          <div class="telemetry-label">Fitness Neto</div>
-          <div id="stat-fitness" class="telemetry-value cyan">--</div>
-          <div id="stat-fitness-sub" class="telemetry-sub">Pts obtenidos</div>
-        </div>
-        <div class="telemetry-card">
-          <div class="telemetry-label">Cobertura Ponderada</div>
-          <div id="stat-coverage" class="telemetry-value green">--%</div>
-          <div id="stat-coverage-sub" class="telemetry-sub">0.0 / 13.0 pts</div>
-        </div>
-        <div class="telemetry-card">
-          <div class="telemetry-label">Regiones Cubiertas</div>
-          <div id="stat-regions" class="telemetry-value">-- / 6</div>
-          <div id="stat-regions-sub" class="telemetry-sub">radio 300 km</div>
-        </div>
-        <div class="telemetry-card">
-          <div class="telemetry-label">Restricciones</div>
-          <div id="stat-violations" class="telemetry-value">--</div>
-          <div id="stat-validity" class="telemetry-sub">Estado de colisión</div>
-        </div>
-      </div>
-
-      <!-- Desglose de las 6 Regiones Objetivo -->
-      <div class="section-label">Objetivos Terrestres (6)</div>
-      <div id="regions-container" class="regions-list">
-        <!-- Generado dinámicamente por app.js -->
-      </div>
-
-      <!-- Leyenda Visual del Sistema -->
-      <div class="section-label">Convención Visual</div>
-      <div class="legend-box">
-        <div class="legend-item">
-          <div class="legend-dot dot-covered"></div>
-          <span>Región objetivo cubierta (r &le; 300 km)</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot dot-uncovered"></div>
-          <span>Región sin cobertura satelital</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot dot-satellite"></div>
-          <span>Satélite LEO (8) y cono de observación</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot dot-debris"></div>
-          <span>Zona de escombros espaciales (Debris)</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot dot-occupied"></div>
-          <span>Objeto preexistente ocupado (Exclusión 5&deg;)</span>
-        </div>
-      </div>
-
-    </aside>
-
-    <!-- Pistas de interacción con el ratón -->
-    <div class="hud-controls-hint">
-      <div class="hint-item"><span class="hint-key">Click Izq</span> Rotar</div>
-      <div class="hint-item"><span class="hint-key">Scroll</span> Zoom</div>
-      <div class="hint-item"><span class="hint-key">Click Der</span> Trasladar</div>
-    </div>
+  <!-- Contenedor Gráfico WebGL Unificado (Scene Three.js) -->
+  <div id="viewport-container">
+    <div id="webgl-canvas-container"></div>
   </div>
 
-  <!-- Three.js (r128) y OrbitControls desde CDN -->
+  <!-- Alerta de respaldo para carga local (CORS / file://) -->
+  <div id="fallback-alert">
+    <span>⚠️ Carga automática bloqueada por protocolo local. Selecciona <strong>run_results.json</strong>:</span>
+    <input type="file" id="file-input" accept=".json">
+  </div>
+
+  <!-- HUD Dashboard Principal -->
+  <div class="hud-overlay">
+    
+    <!-- A) Barra Superior / Header -->
+    <header class="hud-header">
+      <div class="brand-group">
+        <div class="status-beacon"></div>
+        <h1 class="brand-title">ASTRO<span>SHIELD</span> 3D</h1>
+        <span class="brand-tag">LEO CONSTELLATION MONITOR</span>
+      </div>
+
+      <div class="view-mode-selector">
+        <button id="view-mode-3d" class="mode-btn active">🌐 Globo 3D</button>
+        <button id="view-mode-2d" class="mode-btn">🗺️ Mapa 2D Plano</button>
+      </div>
+    </header>
+
+    <!-- B) Panel Lateral Izquierdo: Vistas de Cámara y Capas Holográficas -->
+    <aside class="hud-card hud-sidebar-left">
+      <div class="hud-section-title">🔭 Vistas de Cámara (Presets)</div>
+      <div class="camera-presets-grid">
+        <button id="cam-preset-global" class="cam-btn active">
+          <span>Órbita Global Libre</span>
+          <span style="opacity: 0.5;">[360°]</span>
+        </button>
+        <button id="cam-preset-arctic" class="cam-btn">
+          <span>Polo Norte / Ártico</span>
+          <span style="opacity: 0.5;">[+90°]</span>
+        </button>
+        <button id="cam-preset-antarctic" class="cam-btn">
+          <span>Polo Sur / Antártida</span>
+          <span style="opacity: 0.5;">[-90°]</span>
+        </button>
+        <button id="cam-preset-equator" class="cam-btn">
+          <span>Cinturón Ecuatorial</span>
+          <span style="opacity: 0.5;">[0°]</span>
+        </button>
+        <button id="cam-preset-follow" class="cam-btn">
+          <span>🎯 Seguir Satélite Foco</span>
+          <span id="follow-sat-tag" style="color: var(--neon-cyan); font-weight: 700;">[S1]</span>
+        </button>
+      </div>
+
+      <div class="hud-section-title" style="margin-top: 10px;">⚡ Capas Holográficas</div>
+      <div class="layers-container">
+        <div class="layer-toggle-row">
+          <span>Conos 3D de Cobertura</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-cones" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="layer-toggle-row">
+          <span>Láseres de Regiones</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-lasers" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="layer-toggle-row">
+          <span>Atmósfera & Glow</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-atmosphere" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- C) Panel Lateral Derecho: Inspector de Satélites y Regiones Críticas -->
+    <aside class="hud-card hud-sidebar-right">
+      <div class="hud-section-title">🛰️ Matriz Satelital (8 Activos LEO)</div>
+      <div class="sat-matrix-grid">
+        <button class="sat-matrix-btn active" data-sat-id="1">S1</button>
+        <button class="sat-matrix-btn" data-sat-id="2">S2</button>
+        <button class="sat-matrix-btn" data-sat-id="3">S3</button>
+        <button class="sat-matrix-btn" data-sat-id="4">S4</button>
+        <button class="sat-matrix-btn" data-sat-id="5">S5</button>
+        <button class="sat-matrix-btn" data-sat-id="6">S6</button>
+        <button class="sat-matrix-btn" data-sat-id="7">S7</button>
+        <button class="sat-matrix-btn" data-sat-id="8">S8</button>
+      </div>
+
+      <!-- Ficha Técnica del Satélite Seleccionado -->
+      <div class="telemetry-card-box">
+        <div class="telem-row">
+          <span class="telem-label">Designación</span>
+          <span id="telem-sat-name" class="telem-val cyan">SAT-1 (Alpha)</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Coordenadas LAT / LON</span>
+          <span id="telem-sat-coords" class="telem-val">--°, --°</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Altitud Orbital LEO</span>
+          <span class="telem-val">620.0 km</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Radio de Huella</span>
+          <span class="telem-val">300.0 km</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Área de Huella</span>
+          <span class="telem-val">~0.282 M km²</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Estado de Proximidad</span>
+          <span id="telem-sat-proximity" class="telem-val green">SEGURA (>25.0°)</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Objetivos en Rango</span>
+          <span id="telem-sat-targets" class="telem-val cyan">Ninguno</span>
+        </div>
+      </div>
+
+      <!-- Monitor de Regiones Críticas -->
+      <div class="hud-section-title" style="margin-top: 6px;">🌍 Monitor de Regiones Críticas</div>
+      <div id="regions-monitor-container" class="regions-monitor-list">
+        <!-- Generado dinámicamente -->
+      </div>
+    </aside>
+
+    <!-- D) Barra Inferior: Línea Generacional Evolutiva y KPIs -->
+    <footer class="hud-bottom-bar">
+      <!-- Controles de Reproducción -->
+      <div class="playback-controls">
+        <button id="btn-prev-gen" class="ctrl-btn" title="Generación Anterior">⏮</button>
+        <button id="btn-play-pause" class="ctrl-btn" title="Reproducir / Pausar">▶ Play</button>
+        <button id="btn-next-gen" class="ctrl-btn" title="Siguiente Generación">⏭</button>
+        <select id="speed-selector" class="speed-select" title="Velocidad">
+          <option value="1">1x</option>
+          <option value="2" selected>2x</option>
+          <option value="5">5x</option>
+        </select>
+      </div>
+
+      <!-- Timeline Scrubber -->
+      <div class="timeline-scrubber-box">
+        <div class="timeline-meta">
+          <span>LÍNEA GENERACIONAL EVOLUTIVA</span>
+          <span id="gen-scrubber-label" class="gen-display-badge">GEN: 150 / 150</span>
+        </div>
+        <input type="range" id="gen-scrubber" class="scrubber-slider" min="0" max="150" value="150" step="1">
+      </div>
+
+      <!-- Display de KPIs en Tiempo Real -->
+      <div class="kpi-cards-group">
+        <div class="kpi-badge">
+          <span class="kpi-label">Aptitud Neta</span>
+          <span id="kpi-fitness" class="kpi-value">9.00</span>
+        </div>
+        <div class="kpi-badge">
+          <span class="kpi-label">Cob. Ponderada</span>
+          <span id="kpi-coverage" class="kpi-value" style="color: var(--neon-green);">69.2%</span>
+        </div>
+        <div class="kpi-badge">
+          <span class="kpi-label">Violaciones</span>
+          <span id="kpi-violations" class="kpi-value" style="color: var(--neon-cyan);">0</span>
+        </div>
+        <div class="kpi-badge">
+          <span class="kpi-label">Estado Global</span>
+          <span id="kpi-validity" class="kpi-status-badge valid">VÁLIDA</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Dependencias CDN: Three.js r128, OrbitControls y Tween.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 
-  <!-- Lógica de la aplicación 3D -->
+  <!-- Script principal del visualizador -->
   <script src="./app.js"></script>
 </body>
 </html>
-
