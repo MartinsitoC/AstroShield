@@ -1,174 +1,120 @@
-# AstroShield — Evolución de Constelación Satelital Inteligente
-> Proyecto académico de optimización mediante Algoritmos Genéticos y visualización 3D interactiva en Three.js.  
-> **Fundamentos de Inteligencia Artificial — Equipo de 5 Integrantes**
+# AstroShield
+### Práctica de clase 1
 
 ---
 
-```mermaid
-flowchart LR
-    subgraph Dominio["1. Modelado & Geometría"]
-        C["config.py\n(Constantes & Catálogos)"]
-        G["geometry.py\n(Haversine & Clamping)"]
-    end
+## 1. ¿De qué trata el proyecto?
+Básicamente, el problema consiste en que una organización necesita diseñar una constelación satelital para monitorear varias regiones clave de la Tierra. El detalle está en que tenemos un límite estricto de solo 8 satélites y no podemos ponerlos donde queramos: hay zonas prohibidas con basura espacial flotando y puntos que ya están ocupados por otros objetos en órbita.
 
-    subgraph Evaluacion["2. Aptitud & Seguridad"]
-        E["evaluator.py\n(Fitness & Penalización -10)"]
-    end
-
-    subgraph Optimizacion["3. Motor Evolutivo"]
-        GA["genetic_engine.py\n(Torneo, Cruce, Mutación, Elitismo)"]
-        M["main.py\n(Orquestador CLI)"]
-    end
-
-    subgraph Salidas["4. Verificación & Visualización"]
-        T["test_battery.py\n(7 Experimentos QA)"]
-        V["Three.js 3D Viewer\n(run_results.json)"]
-    end
-
-    C --> G --> E --> GA --> M
-    M --> V
-    E --> T
-```
+Para resolver esto, implementamos un algoritmo evolutivo (genético) que va probando, evaluando y optimizando diferentes configuraciones. La meta no es solo acomodar satélites al azar, sino ver qué tan buena resulta la cobertura ponderada, evitar por completo las zonas restringidas y poder visualizar todo el resultado interactivo sobre un globo terráqueo en 3D.
 
 ---
 
-## 1. Descripción del Proyecto
-
-**AstroShield** es un sistema de ingeniería computacional e inteligencia artificial diseñado para resolver el problema de despliegue espacial óptimo de una constelación de **8 satélites en órbita terrestre baja (LEO)**. El objetivo principal es maximizar la cobertura sobre **6 regiones terrestres prioritarias** para el monitoreo del cambio climático y la seguridad global, respetando de manera infranqueable **zonas de exclusión angular** impuestas por escombros orbitales (*space debris*) y activos satelitales preexistentes.
-
-### Aspectos Clave de la Solución
-* **Representación de Cromosomas Continuos (Real-Coded GA):** Vector continuo $\vec{X} \in \mathbb{R}^{16}$ con coordenadas $(\text{lat}_i, \text{lon}_i)$ que evita los *Hamming cliffs* binarios.
-* **Geometría Esférica Numéricamente Estable:** Cálculo de distancia ortodrómica y separación angular mediante la formulación estabilizada de **Haversine** ($R_{\text{EARTH}} = 6371.0\text{ km}$) con acotamiento de dominio $a \in [0.0, 1.0]$.
-* **Función de Aptitud Ponderada por Prioridades:** Asignación estratégica de pesos ($3.0$ Alta, $2.0$ Media, $1.0$ Normal; máximo $13.0\text{ puntos}$) combinada con una política de **penalización lineal severa ($\beta = 10.0\text{ pts}$ por infracción)** que actúa como barrera repulsiva sin quebrar la diversidad genética.
-* **Monitor 3D Interactivo en Tiempo Real:** Visor WebGL desarrollado con **Three.js** que consume de forma asíncrona la telemetría generada, permitiendo alternar visualmente entre la configuración aleatoria inicial (Gen 0) y la solución óptima.
-
----
-
-## 2. Estructura del Repositorio
-
-El proyecto sigue una arquitectura desacoplada, modular y orientada a pruebas unitarias y de integración:
+## 2. Mapa y estructura del proyecto
+El repositorio está organizado de forma modular para que no se mezcle la lógica con las pruebas ni con los gráficos:
 
 ```text
 AstroShield/
-├── docs/
-│   ├── 01_problem_definition.md   # Entregable 1: Formulación matemática rigurosa y genoma
-│   ├── 04_results_analysis.md     # Entregable 4: Análisis empírico de resultados (7 preguntas)
-│   └── README.md                  # Índice documental
-├── src/
-│   ├── __init__.py                # Inicializador de paquete Python
-│   ├── config.py                  # Catálogos inmutables oficiales, dataclasses y constantes
-│   ├── geometry.py                # Funciones ortodrómicas, ángulos centrales y exclusiones
-│   ├── evaluator.py               # Función de aptitud multiobjetivo y diagnóstico de validez
-│   └── genetic_engine.py          # Algoritmo genético continuo (AstroShieldGA)
-├── tests/
-│   ├── __init__.py                # Inicializador del módulo de pruebas
-│   ├── test_config.py             # Pruebas unitarias de configuración e inmutabilidad
-│   ├── test_geometry.py           # Pruebas unitarias trigonométricas y estabilidad numérica
-│   ├── test_evaluator.py          # Pruebas unitarias de cálculo de fitness y restricciones
-│   ├── test_genetic_engine.py     # Pruebas unitarias de operadores genéticos y elitismo
-│   ├── test_main.py               # Pruebas unitarias de serialización a JSON
-│   ├── test_battery.py            # Batería automatizada de los 7 experimentos de calidad (QA)
-│   └── test_report.md             # Informe cuantitativo generado automáticamente
-├── visualization/
-│   ├── index.html                 # Interfaz HUD y dashboard de telemetría (Three.js)
-│   ├── app.js                     # Motor gráfico WebGL, cúpulas esféricas y rotación orbital
-│   └── data/
-│       ├── .gitkeep               # Preservación de directorio
-│       └── run_results.json       # Telemetría serializada consumida por el visor 3D
-├── main.py                        # Orquestador CLI del Algoritmo Genético
-└── README.md                      # Presentación general y manual técnico del proyecto
+├── docs/                      # Documentación y análisis de resultados
+│   ├── 01_problem_definition.md
+│   └── 04_results_analysis.md
+├── src/                       # Motor del algoritmo y modelos
+│   ├── config.py              # Coordenadas, zonas de debris y constantes
+│   ├── geometry.py            # Distancias esféricas y fórmula de Haversine
+│   ├── evaluator.py           # Cálculo de fitness, prioridades y penalizaciones
+│   └── genetic_engine.py      # Operadores genéticos: cruce, mutación y torneo
+├── tests/                     # Pruebas y validaciones automáticas
+│   ├── test_battery.py        # Suite con las 7 pruebas del proyecto
+│   └── test_report.md         # Métricas generadas por las pruebas
+├── visualization/             # Visor interactivo en Three.js
+│   ├── index.html             # Dashboard y HUD de control
+│   ├── app.js                 # Lógica 3D, morfado 2D/3D y órbitas
+│   └── data/run_results.json  # Datos reales exportados por el algoritmo
+├── main.py                    # Script principal para correr el algoritmo
+└── README.md
 ```
 
 ---
 
-## 3. Requisitos y Configuración del Entorno
+## 3. ¿Cómo correr el proyecto? (Paso a paso)
 
-### Requisitos del Sistema
-* **Python:** Versión **3.10 o superior** (3.11, 3.12, 3.13 totalmente compatibles).
-* **Dependencias:** El núcleo computacional del proyecto hace uso exclusivo de la **Biblioteca Estándar de Python** (`dataclasses`, `typing`, `math`, `random`, `json`, `argparse`, `pathlib`, `unittest`), garantizando portabilidad sin necesidad de instalar dependencias externas pesadas ni entornos virtuales obligatorios.
-* **Visualizador 3D:** Cualquier navegador web moderno (Google Chrome, Firefox, Safari, Microsoft Edge) con aceleración por hardware **WebGL** habilitada.
+Todo el código de Python corre con la biblioteca estándar (3.10 o superior), así que no necesitas instalar librerías pesadas ni configurar entornos virtuales raros.
 
----
-
-## 4. Guía de Ejecución Rápida
-
-### 4.1 Ejecución del Motor Evolutivo y Exportación de Telemetría
-Para ejecutar el Algoritmo Genético con la configuración estandarizada reproducible:
+### 3.1 Correr el algoritmo genético
+Para lanzar la optimización y guardar los resultados para el visor 3D, solo corre:
 
 ```powershell
 python main.py --pop 100 --gen 150 --seed 42
 ```
 
-#### Parámetros Disponibles por Línea de Comandos:
-| Parámetro | Tipo | Valor por Defecto | Descripción |
-| :--- | :---: | :---: | :--- |
-| `--pop` | `int` | `100` | Tamaño de la población de constelaciones |
-| `--gen` | `int` | `150` | Número máximo de generaciones a evolucionar |
-| `--crossover` | `float` | `0.80` | Probabilidad de cruce uniforme a nivel de satélites ($80\%$) |
-| `--mutation` | `float` | `0.15` | Probabilidad de mutación por satélite ($15\%$) |
-| `--sigma` | `float` | `4.0` | Desviación estándar de perturbación gaussiana en grados sexagesimales |
-| `--seed` | `int` | `None` | Semilla para garantizar reproducibilidad exacta |
-| `--output` | `str` | `visualization/data/run_results.json` | Ruta del archivo de salida JSON |
+Si quieres jugar con los parámetros, puedes pasarle opciones por consola:
+* `--pop`: Tamaño de la población (por defecto `100`).
+* `--gen`: Cuántas generaciones evolucionar (por defecto `150`).
+* `--crossover`: Tasa de cruce de satélites (por defecto `0.80`, es decir 80%).
+* `--mutation`: Probabilidad de que un satélite mute (por defecto `0.15`).
+* `--sigma`: Qué tanto se mueve un satélite al mutar (desviación gaussiana en grados, por defecto `4.0`).
+* `--seed`: Semilla aleatoria (ponle un número si quieres resultados reproducibles).
+* `--output`: Dónde guardar el JSON para el visor (por defecto `visualization/data/run_results.json`).
 
-### 4.2 Ejecución de la Batería Automatizada de Pruebas (QA)
-Para ejecutar desatendidamente los **7 experimentos formales de validación** y regenerar el informe [tests/test_report.md](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/tests/test_report.md):
+---
+
+### 3.2 Correr las pruebas automáticas
+Para verificar que todo el sistema y las restricciones se cumplan al 100%:
 
 ```powershell
+# Batería con los 7 experimentos requeridos (genera tests/test_report.md):
 python -m tests.test_battery
-```
 
-Para correr la suite completa de **26 pruebas unitarias**:
-```powershell
+# Todas las 26 pruebas unitarias del backend:
 python -m unittest discover -s tests -t .
 ```
 
-### 4.3 Despliegue del Visor 3D Interactivo
-Para visualizar la Tierra y la constelación en Three.js existen dos alternativas:
+---
 
-1. **Servidor Local Integrado de Python (Recomendado):**
+### 3.3 Abrir el visor 3D interactivo
+El visualizador está hecho en HTML5 y Three.js:
+
+1. **Opción recomendada (servidor local de Python):**
    ```powershell
    python -m http.server 8000
    ```
-   Abre en tu navegador la dirección:  
-   👉 [http://localhost:8000/visualization/index.html](http://localhost:8000/visualization/index.html)
+   Y abres en tu navegador: [http://localhost:8000/visualization/index.html](http://localhost:8000/visualization/index.html).
 
-2. **Apertura Directa (Protocolo `file://`):**
-   Abre [visualization/index.html](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/index.html) con doble clic. Si las directivas de seguridad CORS de tu navegador restringen el `fetch()` automático, la interfaz mostrará una tarjeta de respaldo donde puedes seleccionar el archivo [visualization/data/run_results.json](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/data/run_results.json) mediante el botón interactivo integrado.
+2. **Opción directa (doble clic):**  
+   Puedes abrir directamente [visualization/index.html](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/index.html). Si el navegador bloquea la lectura automática del JSON por seguridad local (CORS en `file://`), la misma interfaz tiene un botón para seleccionar `run_results.json` y cargarlo al instante.
 
 ---
 
-## 5. Organización del Equipo de Trabajo (5 Integrantes)
+## 4. ¿Cómo resolvimos el problema? (Detalles clave)
 
-Distribución de roles, módulos técnicos y asignación temática para la defensa oral del proyecto:
+* **Cromosomas continuos:** Cada individuo de la población representa una constelación completa de 8 satélites. En lugar de usar bits binarios difíciles de mapear, usamos coordenadas reales $(\text{lat}_i, \text{lon}_i)$, con latitudes en $[-90^\circ, 90^\circ]$ y longitudes en $[-180^\circ, 180^\circ]$.
+* **Distancias con Haversine blindado:** Como la Tierra es redonda, no podemos usar distancia euclidiana normal. Usamos la fórmula de Haversine con un *clamping* matemático para evitar que un redondeo de punto flotante rompa el cálculo en los polos o puntos idénticos.
+* **Función de aptitud (Fitness):** Las regiones terrestres tienen distintos niveles de importancia (las de prioridad Alta dan 3.0 pts, Media 2.0 pts y Normal 1.0 pt, sumando 13.0 pts máximos). Si un satélite se acerca demasiado a una zona con basura espacial o a un objeto preexistente, se le aplica una penalización brutal de **$-10.0$ puntos por infracción**, obligando al algoritmo a descartar o corregir esas soluciones de inmediato.
+* **Visor 3D con Morfado Continuo (*Mesh Unrolling*):** Toda la visualización corre en WebGL con Three.js. Al pulsar `[🗺️ Mapa 2D Plano]` o `[🌐 Globo 3D]`, la malla del planeta se desenrolla o enrolla continuamente en tiempo real, los conos de cobertura apuntan fielmente al nadir terrestre, y las trayectorias orbitales LEO se iluminan dinámicamente según el satélite que selecciones en el panel de control.
 
-| Integrante | Rol Técnico | Componentes y Módulos a Cargo | Entregables Clave |
+---
+
+## 5. Organización del equipo (5 integrantes)
+
+Nos repartimos el trabajo en módulos claros para que cada quien tuviera su especialidad:
+
+| Integrante | Rol en el equipo | ¿Qué partes desarrolló? | Entregables asociados |
 | :---: | :--- | :--- | :---: |
-| **Integrante 1** | Arquitecto de Dominio & Geómetra | [src/config.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/config.py)<br>[src/geometry.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/geometry.py) | **Entregable 1**<br>[01_problem_definition.md](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/docs/01_problem_definition.md) |
-| **Integrante 2** | Ingeniero de Evaluación & Optimización | [src/evaluator.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/evaluator.py)<br>[tests/test_evaluator.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/tests/test_evaluator.py) | Modelo de Aptitud y Penalizaciones |
-| **Integrante 3** | Científico de Computación Evolutiva | [src/genetic_engine.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/genetic_engine.py)<br>[main.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/main.py) | **Entregable 2**<br>Motor Genético y Convergencia |
-| **Integrante 4** | Ingeniero de Calidad (QA) & Datos | [tests/test_battery.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/tests/test_battery.py)<br>[docs/04_results_analysis.md](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/docs/04_results_analysis.md) | **Entregables 3 y 4**<br>Validación Empírica y Resiliencia |
-| **Integrante 5** | Ingeniero Frontend & Gráficos WebGL | [visualization/index.html](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/index.html)<br>[visualization/app.js](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/app.js) | **Entregable 5**<br>Visor 3D y Telemetría HUD |
+| **Integrante 1** | Modelado & Geometría | Definición de coordenadas, catálogos en [src/config.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/config.py) y fórmulas de Haversine en [src/geometry.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/geometry.py). | **Entregable 1**<br>Definición matemática formal |
+| **Integrante 2** | Lógica de Evaluación | Cálculo de fitness, ponderación de prioridades y penalizaciones en [src/evaluator.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/evaluator.py). | Modelo de evaluación y restricciones |
+| **Integrante 3** | Motor Genético | Operadores de cruce, mutación gaussiana, selección por torneo y CLI en [src/genetic_engine.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/genetic_engine.py) y [main.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/main.py). | **Entregable 2**<br>Algoritmo evolutivo y convergencia |
+| **Integrante 4** | Pruebas & Calidad (QA) | Automatización de la batería de pruebas en [tests/test_battery.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/tests/test_battery.py) y análisis cuantitativo en [docs/04_results_analysis.md](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/docs/04_results_analysis.md). | **Entregables 3 y 4**<br>Validación experimental y resiliencia |
+| **Integrante 5** | Interfaz y Gráficos 3D | Visualizador interactivo en Three.js, animación de morfado 2D/3D, órbitas y telemetría en [visualization/index.html](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/index.html) y [visualization/app.js](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/app.js). | **Entregable 5**<br>Centro de control y visor 3D |
 
 ---
 
-## 6. Declaración de Uso de Herramientas de Inteligencia Artificial
+## 6. Uso de herramientas de Inteligencia Artificial
 
-Dando riguroso cumplimiento a los criterios de transparencia ética y académica del **Entregable 6**:
+Siguiendo las pautas de honestidad académica del proyecto:
 
-### 6.1 Herramienta Utilizada
-* **Entorno y Modelo:** Asistente de inteligencia artificial **Antigravity** integrado en **Visual Studio Code**.
-
-### 6.2 Alcance del Uso de la IA
-* **Generación Modular Guiada:** Creación asistida de la estructura base del repositorio, tipado estricto con `dataclasses` de Python, *scaffolding* de la escena 3D en Three.js y esqueletos de pruebas bajo especificaciones precisas provistas por el equipo.
-* **Aceleración de Escritura Técnica:** Maquetación inicial de tablas comparativas y formateo de ecuaciones matemáticas en KaTeX/Markdown para los documentos de entrega.
-
-### 6.3 Protocolo de Verificación Humana y Validación Realizada por el Equipo
-El equipo de 5 integrantes asumió la responsabilidad técnica total de los artefactos generados mediante las siguientes tres fases de auditoría manual:
-
-1. **Auditoría Matemática y Trigonométrica Independiente:**  
-   Se verificó manualmente la formulación geodésica de Haversine y la transformación esférica a cartesiana ($\phi, \theta \rightarrow x, y, z$) en [src/geometry.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/geometry.py). Se implementó intencionalmente el acotamiento (*clamping*) $a \in [0.0, 1.0]$ para prevenir excepciones numéricas por desbordamiento de punto flotante IEEE 754 en puntos idénticos y coordenadas antípodas.
-2. **Validación de la Jerarquía de Restricciones:**  
-   Se diseñó y ejecutó la batería de pruebas [tests/test_battery.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/tests/test_battery.py) que audita los 24 pares de satélite-escombros y posiciones ocupadas, demostrando que ninguna solución que invada una zona de exclusión pueda sobrevivir con fitness positivo o superar a una configuración válida.
-3. **Comprobación de la Fidelidad de Telemetría en el Visor 3D:**  
-   Se comprobó que [visualization/app.js](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/app.js) no renderiza órbitas simuladas estáticas ni datos ficticios (*hardcoded*), sino que consume e interpreta dinámicamente las coordenadas geodésicas y métricas reales emitidas en [visualization/data/run_results.json](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/data/run_results.json).
-
+* **¿Qué herramienta usamos?** Utilizamos el asistente de IA **Antigravity** dentro de **Visual Studio Code**.
+* **¿En qué nos ayudó?** Nos sirvió para acelerar la creación de la estructura inicial de carpetas, generar esqueletos de código con `dataclasses` tipadas, maquetar la plantilla base de Three.js y redactar tablas de pruebas.
+* **¿Qué revisamos nosotros?** Todo el código y las fórmulas fueron auditados a mano:
+  1. Revisamos las matemáticas de Haversine paso a paso para asegurarnos de que la distancia angular en la esfera estuviera bien calculada.
+  2. Ajustamos la penalización severa de $-10.0$ puntos tras probar que penalizaciones más suaves permitían que satélites invadieran zonas de escombros.
+  3. Verificamos que el visor 3D lea realmente el archivo `run_results.json` con los datos calculados por el algoritmo, sin valores simulados fijos.
