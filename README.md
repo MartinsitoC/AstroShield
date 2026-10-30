@@ -94,17 +94,16 @@ El visualizador está hecho en HTML5 y Three.js:
 
 ---
 
-## 5. Organización del equipo (5 integrantes)
+## 5. Distribución del equipo (5 integrantes)
+Nos repartimos los módulos para que cada integrante conozca a fondo una parte del sistema durante la revisión:
 
-Nos repartimos el trabajo en módulos claros para que cada quien tuviera su especialidad:
-
-| Integrante | Rol en el equipo | ¿Qué partes desarrolló? | Entregables asociados |
-| :---: | :--- | :--- | :---: |
-| **Integrante 1** | Modelado & Geometría | Definición de coordenadas, catálogos en [src/config.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/config.py) y fórmulas de Haversine en [src/geometry.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/geometry.py). | **Entregable 1**<br>Definición matemática formal |
-| **Integrante 2** | Lógica de Evaluación | Cálculo de fitness, ponderación de prioridades y penalizaciones en [src/evaluator.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/evaluator.py). | Modelo de evaluación y restricciones |
-| **Integrante 3** | Motor Genético | Operadores de cruce, mutación gaussiana, selección por torneo y CLI en [src/genetic_engine.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/src/genetic_engine.py) y [main.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/main.py). | **Entregable 2**<br>Algoritmo evolutivo y convergencia |
-| **Integrante 4** | Pruebas & Calidad (QA) | Automatización de la batería de pruebas en [tests/test_battery.py](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/tests/test_battery.py) y análisis cuantitativo en [docs/04_results_analysis.md](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/docs/04_results_analysis.md). | **Entregables 3 y 4**<br>Validación experimental y resiliencia |
-| **Integrante 5** | Interfaz y Gráficos 3D | Visualizador interactivo en Three.js, animación de morfado 2D/3D, órbitas y telemetría en [visualization/index.html](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/index.html) y [visualization/app.js](file:///c:/Users/marca/Documents/VScode/Fundamentos%20de%20IA/AstroShield/visualization/app.js). | **Entregable 5**<br>Centro de control y visor 3D |
+| Integrante | Área asignada | Archivos clave |
+| :--- | :--- | :--- |
+| **Jesús Martín Canul May** | Arquitectura general, modelado de dominio y coordenadas | `src/config.py`, `src/geometry.py`, `main.py` |
+| **Jesús Francisco Sastre Roblero** | Función de aptitud (fitness), prioridades y penalizaciones de exclusión | `src/evaluator.py`, `docs/01_problem_definition.md` |
+| **Pedro Luis Izquierdo Morales** | Motor evolutivo, selección por torneo, cruce y mutación esférica | `src/genetic_engine.py` |
+| **Hugo Andrey Lechuga Cardoso** | Batería de pruebas de calidad y análisis empírico de resultados | `tests/test_battery.py`, `docs/04_results_analysis.md` |
+| **Juan Ramón Gómez Carreón** | Interfaz WebGL, visualización 3D interactiva, órbitas y controles HUD | `visualization/index.html`, `visualization/app.js` |
 
 ---
 
