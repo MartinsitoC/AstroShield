@@ -1,0 +1,1424 @@
+{
+  "metadata": {
+    "timestamp": "2026-10-30T16:06:30.661069+00:00",
+    "seed_used": 42,
+    "parameters": {
+      "population_size": 100,
+      "generations": 150,
+      "crossover_rate": 0.8,
+      "mutation_rate": 0.15,
+      "mutation_sigma_deg": 4.0
+    }
+  },
+  "environment": {
+    "target_regions": [
+      {
+        "name": "Península de Yucatán, México",
+        "lat": 20.5,
+        "lon": -89.0,
+        "priority": "Alta",
+        "weight": 3.0
+      },
+      {
+        "name": "Amazonía brasileña",
+        "lat": -3.5,
+        "lon": -62.0,
+        "priority": "Alta",
+        "weight": 3.0
+      },
+      {
+        "name": "California, Estados Unidos",
+        "lat": 36.8,
+        "lon": -119.4,
+        "priority": "Media",
+        "weight": 2.0
+      },
+      {
+        "name": "Región del Sahel, África",
+        "lat": 15.0,
+        "lon": 0.0,
+        "priority": "Media",
+        "weight": 2.0
+      },
+      {
+        "name": "Japón",
+        "lat": 36.0,
+        "lon": 138.0,
+        "priority": "Media",
+        "weight": 2.0
+      },
+      {
+        "name": "Interior de Australia",
+        "lat": -25.0,
+        "lon": 133.0,
+        "priority": "Normal",
+        "weight": 1.0
+      }
+    ],
+    "debris_zones": [
+      {
+        "name": "Atlántico Norte",
+        "lat": 45.0,
+        "lon": -35.0,
+        "radius_deg": 12.0
+      },
+      {
+        "name": "Pacífico Sur",
+        "lat": -30.0,
+        "lon": -120.0,
+        "radius_deg": 10.0
+      },
+      {
+        "name": "Región polar norte",
+        "lat": 78.0,
+        "lon": 30.0,
+        "radius_deg": 8.0
+      }
+    ],
+    "occupied_positions": [
+      {
+        "name": "Objeto A",
+        "lat": 10.0,
+        "lon": 45.0,
+        "radius_deg": 5.0
+      },
+      {
+        "name": "Objeto B",
+        "lat": -15.0,
+        "lon": 110.0,
+        "radius_deg": 5.0
+      }
+    ]
+  },
+  "initial_state": {
+    "generation": 0,
+    "fitness": 0.0,
+    "coverage_score": 0.0,
+    "coverage_percentage": 0.0,
+    "covered_regions": [],
+    "uncovered_regions": [
+      "Península de Yucatán, México",
+      "Amazonía brasileña",
+      "California, Estados Unidos",
+      "Región del Sahel, África",
+      "Japón",
+      "Interior de Australia"
+    ],
+    "violations_count": 0,
+    "violations_details": [],
+    "is_valid": true,
+    "satellites": [
+      {
+        "id": 1,
+        "lat": 25.0968,
+        "lon": -170.9961
+      },
+      {
+        "id": 2,
+        "lat": -40.4947,
+        "lon": -99.6441
+      },
+      {
+        "id": 3,
+        "lat": 42.5648,
+        "lon": 63.6118
+      },
+      {
+        "id": 4,
+        "lat": 70.5923,
+        "lon": -148.702
+      },
+      {
+        "id": 5,
+        "lat": -14.0541,
+        "lon": -169.273
+      },
+      {
+        "id": 6,
+        "lat": -50.6452,
+        "lon": 1.9279
+      },
+      {
+        "id": 7,
+        "lat": -85.2235,
+        "lon": -108.4184
+      },
+      {
+        "id": 8,
+        "lat": 26.9792,
+        "lon": 16.1789
+      }
+    ]
+  },
+  "final_state": {
+    "generation": 150,
+    "fitness": 9.0,
+    "coverage_score": 9.0,
+    "coverage_percentage": 69.23,
+    "covered_regions": [
+      "Península de Yucatán, México",
+      "Amazonía brasileña",
+      "California, Estados Unidos",
+      "Interior de Australia"
+    ],
+    "uncovered_regions": [
+      "Región del Sahel, África",
+      "Japón"
+    ],
+    "violations_count": 0,
+    "violations_details": [],
+    "is_valid": true,
+    "satellites": [
+      {
+        "id": 1,
+        "lat": -75.8028,
+        "lon": 136.5086
+      },
+      {
+        "id": 2,
+        "lat": 18.8046,
+        "lon": -88.8722
+      },
+      {
+        "id": 3,
+        "lat": 38.7842,
+        "lon": -120.0934
+      },
+      {
+        "id": 4,
+        "lat": 18.9834,
+        "lon": -89.9112
+      },
+      {
+        "id": 5,
+        "lat": -36.1019,
+        "lon": 174.9652
+      },
+      {
+        "id": 6,
+        "lat": -24.833,
+        "lon": 132.8128
+      },
+      {
+        "id": 7,
+        "lat": -4.5171,
+        "lon": -61.1476
+      },
+      {
+        "id": 8,
+        "lat": 30.8304,
+        "lon": -61.7725
+      }
+    ]
+  },
+  "convergence_history": [
+    {
+      "gen": 0,
+      "best_fitness": 0.0,
+      "avg_fitness": -2.8,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 1,
+      "best_fitness": 0.0,
+      "avg_fitness": -0.3,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 2,
+      "best_fitness": 0.0,
+      "avg_fitness": -0.5,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 3,
+      "best_fitness": 0.0,
+      "avg_fitness": -0.2,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 4,
+      "best_fitness": 0.0,
+      "avg_fitness": -0.1,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 5,
+      "best_fitness": 0.0,
+      "avg_fitness": -0.1,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 6,
+      "best_fitness": 0.0,
+      "avg_fitness": -0.1,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 7,
+      "best_fitness": 0.0,
+      "avg_fitness": -0.1,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 8,
+      "best_fitness": 0.0,
+      "avg_fitness": -0.1,
+      "coverage_score": 0.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 9,
+      "best_fitness": 3.0,
+      "avg_fitness": -0.07,
+      "coverage_score": 3.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 10,
+      "best_fitness": 3.0,
+      "avg_fitness": -0.19,
+      "coverage_score": 3.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 11,
+      "best_fitness": 3.0,
+      "avg_fitness": 0.33,
+      "coverage_score": 3.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 12,
+      "best_fitness": 3.0,
+      "avg_fitness": 0.92,
+      "coverage_score": 3.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 13,
+      "best_fitness": 6.0,
+      "avg_fitness": 1.97,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 14,
+      "best_fitness": 6.0,
+      "avg_fitness": 2.75,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 15,
+      "best_fitness": 6.0,
+      "avg_fitness": 3.13,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 16,
+      "best_fitness": 6.0,
+      "avg_fitness": 3.95,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 17,
+      "best_fitness": 6.0,
+      "avg_fitness": 4.72,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 18,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.12,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 19,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.31,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 20,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.25,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 21,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.4,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 22,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.25,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 23,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.31,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 24,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.12,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 25,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.25,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 26,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.49,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 27,
+      "best_fitness": 6.0,
+      "avg_fitness": 4.97,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 28,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.09,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 29,
+      "best_fitness": 6.0,
+      "avg_fitness": 4.84,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 30,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.15,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 31,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.18,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 32,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.09,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 33,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.23,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 34,
+      "best_fitness": 6.0,
+      "avg_fitness": 4.91,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 35,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.16,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 36,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.15,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 37,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.34,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 38,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.24,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 39,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.07,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 40,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.19,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 41,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.25,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 42,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.11,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 43,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.34,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 44,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.24,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 45,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.16,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 46,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.04,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 47,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.21,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 48,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.25,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 49,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.37,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 50,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.58,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 51,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.37,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 52,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.43,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 53,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.25,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 54,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.25,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 55,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.22,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 56,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.15,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 57,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.22,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 58,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.13,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 59,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.2,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 60,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.32,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 61,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.19,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 62,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.09,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 63,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.1,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 64,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.25,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 65,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.28,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 66,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.33,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 67,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.08,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 68,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.09,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 69,
+      "best_fitness": 6.0,
+      "avg_fitness": 5.34,
+      "coverage_score": 6.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 70,
+      "best_fitness": 8.0,
+      "avg_fitness": 5.24,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 71,
+      "best_fitness": 8.0,
+      "avg_fitness": 5.0,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 72,
+      "best_fitness": 8.0,
+      "avg_fitness": 4.94,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 73,
+      "best_fitness": 8.0,
+      "avg_fitness": 5.64,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 74,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.43,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 75,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.52,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 76,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.06,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 77,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.73,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 78,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.05,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 79,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.08,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 80,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.93,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 81,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.88,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 82,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.86,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 83,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.78,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 84,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.8,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 85,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.06,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 86,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.03,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 87,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.96,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 88,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.89,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 89,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.28,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 90,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.17,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 91,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.14,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 92,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.97,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 93,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.39,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 94,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.78,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 95,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.63,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 96,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.26,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 97,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.96,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 98,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.9,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 99,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.86,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 100,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.67,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 101,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.82,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 102,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.17,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 103,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.02,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 104,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.85,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 105,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.76,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 106,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.9,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 107,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.23,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 108,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.72,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 109,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.07,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 110,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.04,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 111,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.06,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 112,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.08,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 113,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.25,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 114,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.89,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 115,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.07,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 116,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.91,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 117,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.35,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 118,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.96,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 119,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.93,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 120,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.16,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 121,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.85,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 122,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.08,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 123,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.95,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 124,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.02,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 125,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.85,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 126,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.86,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 127,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.7,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 128,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.01,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 129,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.21,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 130,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.99,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 131,
+      "best_fitness": 8.0,
+      "avg_fitness": 7.15,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 132,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.88,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 133,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.87,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 134,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.85,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 135,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.99,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 136,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.9,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 137,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.9,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 138,
+      "best_fitness": 8.0,
+      "avg_fitness": 6.94,
+      "coverage_score": 8.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 139,
+      "best_fitness": 9.0,
+      "avg_fitness": 6.76,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 140,
+      "best_fitness": 9.0,
+      "avg_fitness": 6.66,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 141,
+      "best_fitness": 9.0,
+      "avg_fitness": 6.86,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 142,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.08,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 143,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.21,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 144,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.44,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 145,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.65,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 146,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.77,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 147,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.96,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 148,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.96,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 149,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.74,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    },
+    {
+      "gen": 150,
+      "best_fitness": 9.0,
+      "avg_fitness": 7.37,
+      "coverage_score": 9.0,
+      "violations": 0,
+      "is_valid": true
+    }
+  ]
+}
