@@ -94,7 +94,29 @@ El visualizador está hecho en HTML5 y Three.js:
 
 ---
 
-## 5. Distribución del equipo (5 integrantes)
+## 5. Parámetros del modelo y cómo evaluamos (Fitness)
+Para que el algoritmo no hiciera trampa ni colocara satélites a lo loco, definimos reglas matemáticas claras en el evaluador:
+- **Huella de cobertura:** Cada satélite monitorea un radio de 300 km desde su punto subsatelital usando la distancia de círculo máximo (Haversine).
+- **Ponderación:** No todas las regiones valen lo mismo; las zonas críticas (como la Península de Yucatán o la Amazonia) aportan 3.0 puntos, mientras que las de prioridad media aportan 2.0 puntos.
+- **Penalizaciones duras:** Si la órbita de un satélite cruza a menos de 500 km del centro de una zona de debris o invade el espacio de un satélite preexistente, la solución recibe una penalización severa en el fitness. El algoritmo aprende rápido que esas zonas son prohibidas.
+
+---
+
+## 6. Resultados obtenidos (Corrida Base)
+Tras correr la optimización con la semilla estándar (`--seed 42`, 100 individuos, 150 generaciones), estos fueron los resultados que logramos:
+
+| Métrica | Valor alcanzado | Estado |
+| :--- | :--- | :--- |
+| **Satélites desplegados** | 8 unidades LEO (620 km altitud) | Operativos al 100% |
+| **Cobertura ponderada** | ~69.2% | Óptimo para 8 satélites |
+| **Aptitud neta (Fitness)** | 9.00 pts | Convergencia estable |
+| **Violaciones a zonas de debris** | 0 incidentes | Restricción cumplida |
+| **Conflictos con satélites previos** | 0 colisiones | Separación angular segura |
+| **Batería de pruebas (tests)** | 7 / 7 superadas | Aprobado sin fallos |
+
+---
+
+## 7. Distribución del equipo (5 integrantes)
 Nos repartimos los módulos para que cada integrante conozca a fondo una parte del sistema durante la revisión:
 
 | Integrante | Área asignada | Archivos clave |
@@ -107,7 +129,7 @@ Nos repartimos los módulos para que cada integrante conozca a fondo una parte d
 
 ---
 
-## 6. Uso de herramientas de Inteligencia Artificial
+## 8. Uso de herramientas de Inteligencia Artificial
 
 Siguiendo las pautas de honestidad académica del proyecto:
 
